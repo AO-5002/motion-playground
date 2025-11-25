@@ -9,14 +9,23 @@ function Modal({
 }) {
   return (
     <motion.div
-      className="w-120 h-146 bg-zinc-900 text-white rounded-lg flex flex-col justify-center items-center gap-4 p-8 "
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0 }}
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => setIsModalOpen?.(false)}
     >
-      <div>
-        <ModalBtn setIsModalOpen={setIsModalOpen!} />
-      </div>
+      <motion.div
+        className="w-96 bg-zinc-900 text-white rounded-lg flex flex-col justify-center items-center gap-4 p-8"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0 }}
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking modal content
+      >
+        <div>
+          <ModalBtn setIsModalOpen={setIsModalOpen!} />
+        </div>
+      </motion.div>
     </motion.div>
   );
 }

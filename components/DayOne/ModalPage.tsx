@@ -51,18 +51,14 @@ function Product({ name, price, img }: ProductProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   return (
     <>
+      <ProductCard
+        name={name}
+        price={price}
+        img={img}
+        setIsModalOpen={setIsModalOpen}
+      />
       <AnimatePresence>
-        <div className="relative">
-          <ProductCard
-            name={name}
-            price={price}
-            img={img}
-            setIsModalOpen={setIsModalOpen}
-          />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
-          </div>
-        </div>
+        {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
       </AnimatePresence>
     </>
   );

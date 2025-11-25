@@ -1,14 +1,13 @@
 "use client";
 import { motion, type TargetAndTransition } from "motion/react";
+import { Sticker } from "lucide-react";
 
 const initialStyle: TargetAndTransition = {
   opacity: 0,
-  scale: 1,
 };
 
 const animateStyle: TargetAndTransition = {
   opacity: 1,
-  scale: 2,
   filter: "blur(0px)",
   transition: { duration: 1 },
 };
@@ -20,12 +19,16 @@ const exitStyle: TargetAndTransition = {
 function Block() {
   return (
     <motion.div
-      className="shrink-0 w-48 h-48 bg-green-400 rounded-lg flex justify-center items-center"
-      initial={{ filter: "blur(10px)" }}
+      drag
+      dragConstraints={{ left: 0, right: 300 }}
+      dragElastic={0.2}
+      whileDrag={{ scale: 1.5 }}
+      className="shrink-0 w-48 h-48 bg-gradient-to-r from-red-400 to-orange-600 rounded-xl flex justify-center items-center"
+      initial={{ filter: "blur(10px)", ...initialStyle }}
       animate={animateStyle}
       exit={exitStyle}
     >
-      <p className="text-white font-bold text-4xl">Block</p>
+      <Sticker size={48} color="white" className="font-bold" />
     </motion.div>
   );
 }
