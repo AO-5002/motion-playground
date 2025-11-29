@@ -1,7 +1,7 @@
 "use client";
 import { div } from "motion/react-client";
 import React from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { X } from "lucide-react";
 
@@ -29,7 +29,7 @@ function DetailedItem({
     <motion.div
       layoutId={`item-${val}`}
       onClick={handleClick}
-      className="w-full h-12 border border-white p-4 rounded flex flex-row items-center justify-between text-white"
+      className="w-full border border-white p-4 rounded flex flex-row items-center justify-between text-white"
     >
       <span>{name}</span>
       {price}
@@ -62,14 +62,28 @@ function Modal({
 }
 
 function ListItems({ dataContent }: Data) {
-  const [openModal, setModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
   return (
-    <motion.div className="relative w-96 h-128 bg-zinc-900 flex flex-col gap-8 p-8">
+    <motion.div className="relative w-full h-96 bg-zinc-900 flex flex-col gap-8 p-8">
       {dataContent.map((el, i) => {
-        return <DetailedItem key={i} {...el} setModal={setModal} />;
+        return (
+          <DetailedItem
+            key={i}
+            {...el}
+            val={i} // ✅ Pass the index
+            setModal={() => setSelectedItem(i)} // ✅ Track which item
+          />
+        );
       })}
-      {openModal ? <Modal setModal={setModal} /> : <></>}
+      <AnimatePresence>
+        {selectedItem !== null && (
+          <Modal
+            setModal={() => setSelectedItem(null)}
+            val={selectedItem} // ✅ Pass the selected item's val
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
