@@ -6,6 +6,7 @@ import {
   KeyFrameBlock,
 } from "@/components/components";
 import Toast from "@/components/DayTwo/Toast";
+import ListItems from "@/components/DayThree/layout";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,9 +17,29 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Home() {
+  interface DataProps {
+    name: string;
+    price: string;
+  }
+
+  const data: DataProps[] = [
+    {
+      name: "item",
+      price: "20",
+    },
+    {
+      name: "item2",
+      price: "20",
+    },
+    {
+      name: "item3",
+      price: "20",
+    },
+  ];
+
   return (
     <Layout>
-      <Toast />
+      <ListItems dataContent={data} />
     </Layout>
   );
 }
