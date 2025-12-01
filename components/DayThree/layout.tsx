@@ -29,10 +29,13 @@ function DetailedItem({
     <motion.div
       layoutId={`item-${val}`}
       onClick={handleClick}
-      className="w-full border border-white p-4 rounded flex flex-row items-center justify-between text-white"
+      className="w-full h-full shadow-lg bg-[#fff] rounded-lg flex flex-col gap-4 items-center justify-between text-zinc-900"
     >
-      <span>{name}</span>
-      {price}
+      <img src={"./images/skincare.jpg"} className="object-cover w-full h-48" />
+      <span className="w-full h-full p-4 flex flex-row items-center justify-between">
+        <p>Price:</p>
+        {price}
+      </span>
     </motion.div>
   );
 }
@@ -49,15 +52,20 @@ function Modal({
   };
 
   return (
-    <motion.div
-      layoutId={`item-${val}`}
-      className="absolute inset-0 bg-black/80 text-white flex flex-col gap-8 justify-center items-center"
-    >
-      <p className="text-4xl ">Im a modal</p>
-      <button onClick={handleClick} className="p-4 bg-white rounded-lg">
-        <X color="black" />
-      </button>
-    </motion.div>
+    <div className="">
+      <motion.div
+        layoutId={`item-${val}`}
+        className="absolute inset-0 bg-black/80 text-white flex flex-col gap-8 justify-center items-center overflow-auto"
+      >
+        <img
+          src={"./images/skincare.jpg"}
+          className="object-cover w-full h-full"
+        />
+        <button onClick={handleClick} className="p-4 bg-white rounded-lg">
+          <X color="black" />
+        </button>
+      </motion.div>
+    </div>
   );
 }
 
@@ -65,7 +73,7 @@ function ListItems({ dataContent }: Data) {
   const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
   return (
-    <motion.div className="relative w-full h-96 bg-zinc-900 flex flex-col gap-8 p-8">
+    <motion.div className="relative w-[500px] h-128 bg-white shadow-2xl flex flex-col gap-8 p-8 overflow-auto">
       {dataContent.map((el, i) => {
         return (
           <DetailedItem

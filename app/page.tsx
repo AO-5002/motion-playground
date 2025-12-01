@@ -7,39 +7,20 @@ import {
 } from "@/components/components";
 import Toast from "@/components/DayTwo/Toast";
 import ListItems from "@/components/DayThree/layout";
+import ChessboardPage from "@/components/DayFour/Pragmatic";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border font-mono flex items-center justify-center min-h-screen p-8">
+    <div className="relative font-mono flex items-center justify-center min-h-screen p-8">
       {children}
     </div>
   );
 }
 
 export default function Home() {
-  interface DataProps {
-    name: string;
-    price: string;
-  }
-
-  const data: DataProps[] = [
-    {
-      name: "item",
-      price: "20",
-    },
-    {
-      name: "item2",
-      price: "20",
-    },
-    {
-      name: "item3",
-      price: "20",
-    },
-  ];
-
   return (
     <Layout>
-      <ListItems dataContent={data} />
+      <ChessboardPage />
     </Layout>
   );
 }
