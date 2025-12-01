@@ -8,10 +8,11 @@ import {
 import Toast from "@/components/DayTwo/Toast";
 import ListItems from "@/components/DayThree/layout";
 import ChessboardPage from "@/components/DayFour/Pragmatic";
+import GridPage from "@/components/DayFive/GridPage";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative font-mono flex items-center justify-center min-h-screen p-8">
+    <div className="font-mono w-full min-h-screen flex justify-center items-center">
       {children}
     </div>
   );
@@ -20,7 +21,9 @@ function Layout({ children }: { children: React.ReactNode }) {
 export default function Home() {
   return (
     <Layout>
-      <ChessboardPage />
+      <div className="w-2/3 h-[500px]">
+        <GridPage />
+      </div>
     </Layout>
   );
 }

@@ -31,14 +31,77 @@ export const pieceLookup: {
   pawn: (piece) => <Pawn location={piece.location} />,
 };
 
+// Type guard to check if data is a valid Coord
+function isCoord(data: unknown): data is Coord {
+  return (
+    Array.isArray(data) &&
+    data.length === 2 &&
+    typeof data[0] === "number" &&
+    typeof data[1] === "number"
+  );
+}
+
+// Type guard to check if data is a valid PieceType
+function isPieceType(data: unknown): data is PieceType {
+  return data === "king" || data === "pawn";
+}
+
+// Function to determine if a move is valid
+function canMove(
+  from: Coord,
+  to: Coord,
+  pieceType: PieceType,
+  targetPiece?: PieceType
+): boolean {
+  const [fromRow, fromCol] = from;
+  const [toRow, toCol] = to;
+
+  // Can't move to the same square
+  if (isEqualCoord(from, to)) {
+    return false;
+  }
+
+  // Calculate movement deltas
+  const rowDiff = Math.abs(toRow - fromRow);
+  const colDiff = Math.abs(toCol - fromCol);
+
+  if (pieceType === "king") {
+    // King can move one square in any direction
+    return rowDiff <= 1 && colDiff <= 1;
+  }
+
+  if (pieceType === "pawn") {
+    // Pawn can move forward one square (assuming pawns move "down" the board)
+    // Can't capture with forward move (simplified rules)
+    if (fromCol === toCol && toRow === fromRow + 1 && !targetPiece) {
+      return true;
+    }
+
+    // Pawn can capture diagonally forward
+    if (colDiff === 1 && toRow === fromRow + 1 && targetPiece) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return false;
+}
+
 type SquareProps = {
+  pieces?: PieceType;
   location: Coord;
   children: React.ReactNode;
 };
 
-function Square({ location, children }: SquareProps): ReactElement {
+type HoveredState = "idle" | "validMove" | "invalidMove";
+
+function Square({ pieces, location, children }: SquareProps): ReactElement {
   const ref = useRef<HTMLDivElement>(null);
-  const [isDraggedOver, setIsDraggedOver] = useState(false);
+  const [state, setState] = useState<HoveredState>("idle");
+
+  // Define isDraggedOver based on state
+  const isDraggedOver = state === "validMove";
 
   useEffect(() => {
     const el = ref.current;
@@ -46,11 +109,28 @@ function Square({ location, children }: SquareProps): ReactElement {
 
     return dropTargetForElements({
       element: el,
-      onDragEnter: () => setIsDraggedOver(true),
-      onDragLeave: () => setIsDraggedOver(false),
-      onDrop: () => setIsDraggedOver(false),
+      onDragEnter: ({ source }) => {
+        // Add proper validation
+        if (
+          !isCoord(source.data.location) ||
+          !isPieceType(source.data.pieceType)
+        ) {
+          return;
+        }
+
+        if (
+          canMove(source.data.location, location, source.data.pieceType, pieces)
+        ) {
+          setState("validMove");
+        } else {
+          setState("invalidMove");
+        }
+      },
+
+      onDragLeave: () => setState("idle"),
+      onDrop: () => setState("idle"),
     });
-  }, []);
+  }, [location, pieces]); // Add dependencies
 
   const isDark = (location[0] + location[1]) % 2 === 1;
 
