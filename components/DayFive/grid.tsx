@@ -9,15 +9,37 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { source } from "motion/react-client";
+import { div } from "motion/react-client";
 
 interface Children {
   children: React.ReactNode;
 }
 
+function EmojiLayout({ children }: Children) {
+  return <div className="text-4xl font-bold text-white">{children}</div>;
+}
+
+function DerpFace() {
+  return <EmojiLayout>˙𐃷˙</EmojiLayout>;
+}
+
+function AngryFace() {
+  return <EmojiLayout>¬`‸´¬</EmojiLayout>;
+}
+
 function Block({ id }: { id: string }) {
   const ref = useRef(null);
   const [dragging, setDragging] = useState<boolean>(false);
+  const [isHappy, setIsHappy] = useState<boolean>(true); // Add this
+
+  // Cycle faces every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsHappy((prev) => !prev);
+    }, 5000);
+
+    return () => clearInterval(interval); // Cleanup
+  }, []);
 
   useEffect(() => {
     const el = ref.current;
@@ -34,9 +56,13 @@ function Block({ id }: { id: string }) {
   return (
     <motion.div
       ref={ref}
+      style={{
+        backgroundImage:
+          "radial-gradient(circle,rgba(250, 80, 111, 1) 0%, rgba(240, 124, 74, 1) 100%)",
+      }}
       initial={{ scale: 1 }}
-      animate={{ scale: dragging ? 0.8 : 1, opacity: dragging ? 0.8 : 1 }}
-      className="relative w-44 h-44 bg-zinc-200 rounded-lg flex justify-center items-center"
+      animate={{ scale: dragging ? 0.9 : 1, opacity: dragging ? 0.4 : 1 }}
+      className="relative w-full h-full bg-zinc-200 rounded-lg flex justify-center items-center"
     >
       <motion.div
         initial={{ opacity: 0 }}
@@ -45,7 +71,30 @@ function Block({ id }: { id: string }) {
       >
         {dragging ? "" : <Grip />}
       </motion.div>
-      {dragging ? <Annoyed /> : <Smile size={36} color="black" />}
+
+      {!dragging && (
+        <AnimatePresence mode="wait">
+          {isHappy ? (
+            <motion.div
+              key="happy"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+            >
+              <DerpFace />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="angry"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+            >
+              <AngryFace />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </motion.div>
   );
 }
@@ -56,12 +105,16 @@ function Grid() {
 
   const handleLeftDrop = (blockId: string) => {
     setRightGrid((prev) => prev.filter((id) => id != blockId));
-    setLeftGrid((prev) => [...prev, blockId]);
+    setLeftGrid((prev) =>
+      prev.includes(blockId) ? [...prev] : [...prev, blockId]
+    );
   };
 
   const handleRightDrop = (blockId: string) => {
     setLeftGrid((prev) => prev.filter((id) => id != blockId));
-    setRightGrid((prev) => [...prev, blockId]);
+    setRightGrid((prev) =>
+      prev.includes(blockId) ? [...prev] : [...prev, blockId]
+    );
   };
 
   function ColOne({ children }: Children) {
@@ -96,7 +149,9 @@ function Grid() {
 
       return dropTargetForElements({
         element: el,
-        onDragEnter: () => setIsDraggedOver(true),
+        onDragEnter: () => {
+          setIsDraggedOver(true);
+        },
         onDragLeave: () => setIsDraggedOver(false),
         onDrop: ({ source }) => {
           setIsDraggedOver(false);
@@ -115,21 +170,24 @@ function Grid() {
       <motion.div
         ref={ref}
         animate={{
-          backgroundColor: isDraggedOver ? "#d1d5db" : "#fafafa",
+          backgroundColor: isDraggedOver ? "#FFDEDE" : "",
+          opacity: isDraggedOver ? 0.4 : 1,
         }}
         transition={{
           duration: 0.4,
           ease: [0.4, 0, 0.2, 1],
         }}
-        className="w-full h-full flex justify-center items-center p-4 rounded-xl"
+        className="w-full h-full p-4 rounded-xl"
       >
-        <div className="grid grid-cols-2 grid-rows-2 gap-4">{children}</div>
+        <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-4">
+          {children}
+        </div>
       </motion.div>
     );
   }
 
   return (
-    <div className="w-full h-full bg-[#fff] shadow-xl rounded-2xl">
+    <div className="w-full h-full bg-[#fff]/40 shadow-xl rounded-2xl">
       <div className="relative w-full h-full grid grid-cols-2 gap-4 p-4">
         <ColOne>
           <DropField onBlockDrop={handleLeftDrop}>

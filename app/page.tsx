@@ -12,7 +12,7 @@ import GridPage from "@/components/DayFive/GridPage";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono w-full min-h-screen flex justify-center items-center">
+    <div className="bg-[url(/images/cool.png)] bg-cover bg-no-repeat font-mono w-full min-h-screen flex justify-center items-center">
       {children}
     </div>
   );
