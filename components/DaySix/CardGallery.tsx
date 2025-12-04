@@ -1,4 +1,4 @@
-import { GalleryLayout } from "./GalleryLayout";
+import { GalleryLayout, Gallery } from "./GalleryLayout";
 
 /*
 A row of floating 3D cards that react to mouse movement and can be clicked to expand/focus.
@@ -14,7 +14,7 @@ Three.js Fiber handles the 3D rendering
 function CardGallery() {
   return (
     <GalleryLayout>
-      <CardGallery />
+      <Gallery />
     </GalleryLayout>
   );
 }
