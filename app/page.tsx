@@ -14,9 +14,19 @@ import CardGallery from "@/components/DaySix/CardGallery";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono w-full min-h-screen flex justify-center items-center">
+    <div className="font-mono w-full h-screen flex justify-center items-center">
       {children}
     </div>
+  );
+}
+
+function ThreeJSLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <div className="bg-zinc-900 font-mono w-full h-screen flex justify-center items-center">
+        {children}
+      </div>
+    </>
   );
 }
 
@@ -30,8 +40,8 @@ function Layout2({ children }: { children: React.ReactNode }) {
 
 export default function Home() {
   return (
-    <Layout>
-      <CardGallery />
-    </Layout>
+    <ThreeJSLayout>
+      <TutorialThreeFiber />
+    </ThreeJSLayout>
   );
 }
